@@ -18,9 +18,11 @@ app.use(cookieParser())
 
 // import routes
 import authRoutes from './routes/auth.routes.js'
+import productRoutes from './routes/product.routes.js'
 
 // routes
 app.use("/api/v1/auth", authRoutes)
+app.use("/api/v1/products", productRoutes)
 
 connectDb()
     .then(() => {
