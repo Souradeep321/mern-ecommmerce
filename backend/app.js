@@ -1,19 +1,27 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 import connectDb from './db/connnection.js'
 
 dotenv.config({
-    path: 'backend/.env'
+    path: './backend/.env'
 })
 
 const app = express()
 const port = process.env.PORT || 5001
 
+
 // common middlewares
-app.use(express.json({ limit: '16kb' })) // Parse JSON request bodies
-app.use(express.urlencoded({ extended: true })) // Parse URL-encoded request bodies
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+}))
+
+app.use(express.json({ limit: "16kb" }))
+app.use(express.urlencoded({ extended: true, limit: "16kb" }))
+app.use(express.static("public"))
 app.use(cookieParser())
 
 // import routes
