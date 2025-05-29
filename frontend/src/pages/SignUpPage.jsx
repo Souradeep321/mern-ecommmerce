@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useUserStore } from "../store/useUserStore";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -26,10 +27,21 @@ const SignUpPage = () => {
 
   const { user, signup, loading } = useUserStore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("called here", formData);
-    signup(formData);
+    try {
+      await signup(formData);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "An error occurred");
+    }
+    finally {
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+    }
   };
 
   return (

@@ -11,6 +11,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import { useUserStore } from "../store/useUserStore";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -19,10 +20,16 @@ const LoginPage = () => {
 
   const { login, loading } = useUserStore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email, password);
-    login({ email, password });
+    try {
+      await login({ email, password });
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "An error occurred");
+    } finally {
+      setEmail("");
+      setPassword("");
+    }
   };
 
   return (
