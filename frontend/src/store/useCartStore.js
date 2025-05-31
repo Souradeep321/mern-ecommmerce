@@ -66,7 +66,7 @@ export const useCartStore = create((set, get) => ({
             get().calculateTotal();
         } catch (error) {
             set({ cart: [], loading: false });
-            toast.error("An error occurred while fetching cart");
+            toast.error(error?.response?.data?.message || "An error occurred while fetching cart items");
         }
     },
 
