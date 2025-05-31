@@ -9,17 +9,11 @@ const ProductCard = ({ product }) => {
     const { user } = useUserStore();
     const { addToCart } = useCartStore();
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         if (!user) {
             navigate("/login");
             return;
         }
-
-        if (product.countInStock <= 0) {
-            toast.error("Out of stock");
-            return;
-        }
-
         addToCart(product);
     };
 

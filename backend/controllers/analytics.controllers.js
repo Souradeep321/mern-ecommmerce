@@ -3,8 +3,8 @@ import { Product } from "../models/product.models.js"
 import { Order } from "../models/order.models.js";
 
 export const getAnalyticsData = async () => {
-   const totalUsers = User.countDocuments();
-   const totalProducts = Product.countDocuments();
+   const totalUsers = await User.countDocuments();
+   const totalProducts = await Product.countDocuments();
 
    const salesData = await Order.aggregate([
       {
@@ -14,7 +14,7 @@ export const getAnalyticsData = async () => {
             totalRevenue: { $sum: '$totalAmount' }
          }
       }
-   ])
+   ]);
 
    const { totalSales, totalRevenue } = salesData[0] || { totalSales: 0, totalRevenue: 0 };
 
@@ -23,8 +23,9 @@ export const getAnalyticsData = async () => {
       products: totalProducts,
       sales: totalSales,
       revenue: totalRevenue
-   }
+   };
 }
+
 
 export const getDailySalesData = async (startDate, endDate) => {
 	try {

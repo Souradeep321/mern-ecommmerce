@@ -34,6 +34,17 @@ export const useProductStore = create((set) => ({
             set({ loading: false });
         }
     },
+    fetchFeaturedProducts: async () => {
+        set({ loading: true });
+        try {
+            const res = await axios.get("/products/featured");
+            console.log("Featured products response:", res.data);  // <-- add this
+            set({ products: res.data, loading: false });
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "An error occurred while fetching products");
+            set({ loading: false });
+        }
+    },
     deleteProduct: async (id) => {
         set({ loading: true });
         try {

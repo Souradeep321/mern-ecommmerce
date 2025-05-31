@@ -29,7 +29,9 @@ export const getFeaturedProducts = async (req, res) => {
         // store in redis for quick access
         await redis.set("featured_products", JSON.stringify(featuredProducts))
 
-        res.status(200).json({ message: "Products fetched successfully", products: featuredProducts })
+        if (featuredProducts) {
+            return res.json({ message: "Products fetched successfully", products: JSON.parse(featuredProducts) });
+        }
     } catch (error) {
         console.log("Error in get all products controller", error);
         res.status(500).json({ message: "Something went wrong", error: error.message })
@@ -143,13 +145,13 @@ export const getProductByCategory = async (req, res) => {
 export const toggleFeaturedProduct = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
-        if(product){
+        if (product) {
             product.isFeatured = !product.isFeatured;
             const updatedProduct = await product.save();
             // update in redis
             await updaFeaturedProductsInRedis();
             res.status(200).json({ message: "Product updated successfully", product: updatedProduct });
-        }else{
+        } else {
             res.status(404).json({ message: "Product not found" })
         }
     } catch (error) {
