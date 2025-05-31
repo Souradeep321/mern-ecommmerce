@@ -2,10 +2,11 @@
   "name": "mern_ecommerce",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "backend/app.js",
   "scripts": {
-    "dev": "nodemon backend/app.js",
-    "start": "node backend/app.js"
+    "dev": "cross-env NODE_ENV=development nodemon backend/app.js",
+    "start": "cross-env NODE_ENV=production node backend/app.js",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "keywords": [],
   "author": "",
