@@ -116,3 +116,14 @@ export const updateQuantity = async (req, res) => {
     }
 }
 
+export const deleteCartProducts = async (req, res) => {
+    try {
+        const user = req.user;
+        user.cartItems = [];
+        await user.save();
+        res.status(200).json({ message: "Cart cleared successfully", cartItems: user.cartItems });
+    } catch (error) {
+        console.log("Error in deleteCartProducts controller", error.message);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+}
