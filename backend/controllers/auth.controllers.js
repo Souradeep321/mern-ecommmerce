@@ -136,7 +136,7 @@ export const refreshToken = async (req, res) => {
             secure: process.env.NODE_ENV === "production",
             maxAge: 15 * 60 * 1000
         });
-
+ 
         res.status(200).json({ message: "Token refreshed successfully" });
     } catch (error) {
         console.log("Error in refresh token controller", error);

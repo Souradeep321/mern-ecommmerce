@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import axios from '../lib/axios'
 import { toast } from "react-hot-toast"
+import { response } from 'express'
 
 
 export const useUserStore = create((set, get) => ({
@@ -59,6 +60,49 @@ export const useUserStore = create((set, get) => ({
         }
     },
 
+    refreshToken: async () => {
+        if (get().checkingAuth) return
+
+        set({ checkingAuth: true })
+        try {
+            const res = await axios.post("/auth/refresh-token");
+            set({ checkingAuth: false });
+            return res.data;
+        } catch (error) {
+            set({ user: null, checkingAuth: false });
+            throw error;
+        }
+    }
+
 }))
 
 // TODO: add refresh token 
+
+let refreshToken = null
+
+axios.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+                // if a refresh promise in progress, wait for it to complete
+                if (refreshPromise) {
+                    await refreshPromise;
+                    return axios(originalRequest);
+                }
+                // start a new refresh promise
+                refreshPromise = useUserStore.getState().refreshToken();
+                await refreshPromise;
+                refreshPromise = null;
+
+                return axios(originalRequest);
+            } catch (error) {
+                useUserStore.getState().logout();
+                return Promise.reject(error);
+            }
+        }
+        return Promise.reject(error);
+    }
+);
